@@ -1,2 +1,5 @@
 bin/
 run_performance_tests.sh
+.idea/
+build/
+gatling-results/
