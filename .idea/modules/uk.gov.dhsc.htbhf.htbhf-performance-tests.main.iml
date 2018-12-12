@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="htbhf-performance-tests:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="uk.gov.dhsc.htbhf" external.system.module.type="sourceSet" external.system.module.version="0.0.1" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
+    <output url="file://$MODULE_DIR$/../../out/production/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: io.gatling.highcharts:gatling-charts-highcharts:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-app:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-charts:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-recorder:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-http:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-http-client:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-jms:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-jdbc:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-redis:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-graphite:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-core:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-commons:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-swing_2.12:2.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.json4s:json4s-jackson_2.12:3.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.typesafe.akka:akka-slf4j_2.12:2.5.18" level="project" />
+    <orderEntry type="library" name="Gradle: com.typesafe.akka:akka-actor_2.12:2.5.18" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:gatling-netty-util:3.0.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.typesafe.scala-logging:scala-logging_2.12:3.9.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.dongxiguo:fastring_2.12:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.softwaremill.quicklens:quicklens_2.12:1.4.11" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang:scala-reflect:2.12.7" level="project" />
+    <orderEntry type="library" name="Gradle: io.suzaku:boopickle_2.12:1.3.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.typelevel:spire-macros_2.12:0.16.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-java8-compat_2.12:0.9.0" level="project" />
+    <orderEntry type="library" name="Gradle: io.gatling:jsonpath_2.12:0.6.14" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-parser-combinators_2.12:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.scopt:scopt_2.12:3.7.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang.modules:scala-xml_2.12:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: net.debasishg:redisclient_2.12:3.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.json4s:json4s-core_2.12:3.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.json4s:json4s-ast_2.12:3.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.json4s:json4s-scalap_2.12:3.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.scala-lang:scala-library:2.12.8" level="project" />
+    <orderEntry type="library" name="Gradle: com.tdunning:t-digest:3.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.bouncycastle:bcpkix-jdk15on:1.60" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-handler-proxy:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-http2:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-http:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-handler:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-native-epoll:linux-x86_64:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-resolver-dns:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-socks:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-dns:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-native-unix-common:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-buffer:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-tcnative-boringssl-static:2.0.19.Final" level="project" />
+    <orderEntry type="library" name="Gradle: com.sun.activation:javax.activation:1.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: ch.qos.logback:logback-classic:1.2.3" level="project" />
+    <orderEntry type="library" name="Gradle: io.pebbletemplates:pebble:3.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Gradle: com.typesafe:config:1.3.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.eatthepath:fast-uuid:0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.simpleflatmapper:lightning-csv:6.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.simpleflatmapper:sfm-util:6.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.ben-manes.caffeine:caffeine:2.6.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jodd:jodd-json:5.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: net.sf.saxon:Saxon-HE:9.9.0-2" level="project" />
+    <orderEntry type="library" name="Gradle: org.jodd:jodd-lagarto:5.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.hdrhistogram:HdrHistogram:2.1.10" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.7" level="project" />
+    <orderEntry type="library" name="Gradle: org.bouncycastle:bcprov-jdk15on:1.60" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-resolver:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-common:4.1.31.Final" level="project" />
+    <orderEntry type="library" name="Gradle: ch.qos.logback:logback-core:1.2.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.unbescape:unbescape:1.1.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Gradle: org.jodd:jodd-bean:5.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.jodd:jodd-core:5.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.jodd:jodd-log:5.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: commons-pool:commons-pool:1.6" level="project" />
+    <orderEntry type="library" name="Gradle: com.thoughtworks.paranamer:paranamer:2.8" level="project" />
+  </component>
+</module>
