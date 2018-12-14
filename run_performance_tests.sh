@@ -18,6 +18,6 @@ export BASE_URL="https://$ROUTE_PREFIX.${CF_PUBLIC_DOMAIN}/help-to-buy-healthy-f
 
 RESULTS_DIRECTORY=`pwd`/${PERF_TESTS_RESULTS_DIRECTORY}
 
-${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf src/main/scala/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${RESULTS_DIRECTORY}
+${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${RESULTS_DIRECTORY}
 
 cf delete-route -f ${CF_PUBLIC_DOMAIN} --hostname=${ROUTE_PREFIX}
