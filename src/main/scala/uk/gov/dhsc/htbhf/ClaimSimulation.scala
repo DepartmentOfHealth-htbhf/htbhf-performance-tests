@@ -6,7 +6,7 @@ import io.gatling.core.Predef._
 class ClaimSimulation extends Simulation {
 
   val baseURl = System.getenv("BASE_URL")
-  val numUsers = System.getenv("NUMBER_OF_USERS")
+  val numUsers = System.getenv("PERF_TEST_NUMBER_OF_USERS")
 
   val httpProtocol = http
     .baseUrl(baseURl)
