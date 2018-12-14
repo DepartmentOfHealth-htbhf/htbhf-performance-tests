@@ -1,3 +1,5 @@
 language: scala
 
-script: ./gradlew clean build check && ./gradlew ciPerformRelease -s
+script: ./gradlew clean build check
+
+after_script: test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && ./gradlew ciPerformRelease -s
