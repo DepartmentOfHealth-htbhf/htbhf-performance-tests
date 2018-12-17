@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export PATH=$PATH:${BIN_DIR}
+export CURRENT_DIR=`pwd`
 
 if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
   echo "Downloading gatling"
@@ -9,8 +10,11 @@ if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
   wget -q -O gatling.zip ${GATLING_URL}
   unzip -q -o gatling.zip
   rm gatling.zip
-  cd ..
+  cd ${CURRENT_DIR}
 fi
+
+echo "Logging into cloud foundry with api:$CF_API, org:$CF_ORG, space:$CF_SPACE with user:$CF_USER"
+cf login -a ${CF_API} -u ${CF_USER} -p "${CF_PASS}" -s ${CF_SPACE} -o ${CF_ORG}
 
 #echo "# creating a temporary (public) route to the app"
 ROUTE_PREFIX=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1)
