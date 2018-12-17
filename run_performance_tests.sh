@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH=$PATH:${BIN_DIR}
+
 if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
   echo "Downloading gatling"
   mkdir -p ${BIN_DIR}
