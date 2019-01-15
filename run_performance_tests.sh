@@ -38,7 +38,7 @@ cf login -a ${CF_API} -u ${CF_USER} -p "${CF_PASS}" -s ${CF_SPACE} -o ${CF_ORG}
 #echo "# creating a temporary (public) route to the app"
 ROUTE_PREFIX=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1)
 cf map-route ${UI_APP_NAME} ${CF_PUBLIC_DOMAIN} --hostname ${ROUTE_PREFIX}
-export BASE_URL="https://$ROUTE_PREFIX.${CF_PUBLIC_DOMAIN}/help-to-buy-healthy-foods"
+export BASE_URL="https://$ROUTE_PREFIX.${CF_PUBLIC_DOMAIN}/"
 
 ${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf ${PERF_TESTS_DIR}/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${RESULTS_DIRECTORY}
 
