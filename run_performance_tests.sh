@@ -22,6 +22,9 @@ check_variable_is_set CF_PUBLIC_DOMAIN
 check_variable_is_set RESULTS_DIRECTORY
 check_variable_is_set PERF_TESTS_DIR
 
+export CF_DIR=${CURRENT_DIR}/cloud_foundry
+/bin/bash ${CURRENT_DIR}/install_cf_cli.sh
+
 if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
   echo "Downloading gatling"
   mkdir -p ${BIN_DIR}
