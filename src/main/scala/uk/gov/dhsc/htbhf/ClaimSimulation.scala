@@ -1,7 +1,7 @@
 package uk.gov.dhsc.htbhf
 
-import io.gatling.http.Predef._
 import io.gatling.core.Predef._
+import io.gatling.http.Predef._
 
 class ClaimSimulation extends Simulation {
 
@@ -12,15 +12,16 @@ class ClaimSimulation extends Simulation {
     .baseUrl(baseURl)
 
   val scn = scenario("ClaimSimulation")
-    .exec(http("home_page")
+    .exec(http("enter_name_page")
       .get("/enter-name")
+      .check(status.is(200))
       .check(
-        regex("""<input type="hidden" name="_csrf" value="(.*)"""").saveAs("csrf_token")
+        regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
       )
     )
     .exec(http("send_name")
       .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
-     .exec(http("confirm")
+    .exec(http("confirm")
       .post("/confirm").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
 
   setUp(

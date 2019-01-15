@@ -3,3 +3,5 @@ bin/
 build/
 gatling-results/
 .gradle/
+/src/main/resources/run_performance_tests.sh
+/src/main/resources/install_cf_cli.sh
