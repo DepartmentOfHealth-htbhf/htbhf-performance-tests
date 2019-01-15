@@ -24,6 +24,7 @@ check_variable_is_set PERF_TESTS_DIR
 
 export CF_DIR=${PERF_TESTS_DIR}/cloud_foundry
 /bin/bash ${PERF_TESTS_DIR}/install_cf_cli.sh
+export PATH=${PATH}:${CF_DIR}
 
 if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
   echo "Downloading gatling"
