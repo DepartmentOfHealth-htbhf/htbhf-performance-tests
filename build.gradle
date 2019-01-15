@@ -14,11 +14,16 @@ dependencies {
     implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.0.1.1'
 }
 
-task copyScript(type: Copy) {
+task copyRunScript(type: Copy) {
     from 'run_performance_tests.sh'
     into 'src/main/resources'
 }
 
+task copyInstallCFScript(type: Copy) {
+    from 'install_cf_cli.sh'
+    into 'src/main/resources'
+}
+
 processResources{
-    dependsOn copyScript
+    dependsOn copyRunScript, copyInstallCFScript
 }
