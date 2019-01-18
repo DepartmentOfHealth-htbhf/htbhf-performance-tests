@@ -8,21 +8,25 @@ class ClaimSimulation extends Simulation {
   val baseURl = System.getenv("BASE_URL")
   val numUsers = System.getenv("PERF_TEST_NUMBER_OF_USERS")
 
-  val httpProtocol = http
-    .baseUrl(baseURl)
+  val httpProtocol = http.baseUrl(baseURl)
 
   val scn = scenario("ClaimSimulation")
-    .exec(http("enter_name_page")
-      .get("/enter-name")
+    .exec(http("enter_nino_page")
+      .get("/enter-nino")
       .check(status.is(200))
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
       )
     )
+    .exec(http("send_nino")
+      .post("/enter-nino").formParam("nino", "QQ123456C").formParam("_csrf", "${csrf_token}"))
+
+    .exec(http("enter_name_page")
+      .get("/enter-name")
+      .check(status.is(200))
+    )
     .exec(http("send_name")
       .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
-    .exec(http("confirm")
-      .post("/confirm").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
 
   setUp(
     scn.inject(atOnceUsers(numUsers.toInt))
