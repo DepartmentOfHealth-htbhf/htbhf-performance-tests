@@ -28,6 +28,13 @@ class ClaimSimulation extends Simulation {
     .exec(http("send_name")
       .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
 
+    .exec(http("enter_dob_page")
+      .get("/enter-dob")
+      .check(status.is(200))
+    )
+    .exec(http("send_dob")
+      .post("/enter-dob").formParam("dob-day", "1").formParam("dob-month", "11").formParam("dob-year", "1980").formParam("_csrf", "${csrf_token}"))
+
   setUp(
     scn.inject(atOnceUsers(numUsers.toInt))
   ).protocols(httpProtocol)
