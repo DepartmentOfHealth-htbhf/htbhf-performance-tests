@@ -11,22 +11,23 @@ class ClaimSimulation extends Simulation {
   val httpProtocol = http.baseUrl(baseURl)
 
   val scn = scenario("ClaimSimulation")
-    .exec(http("enter_nino_page")
-      .get("/enter-nino")
+    .exec(http("enter_name_page")
+      .get("/enter-name")
       .check(status.is(200))
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
       )
     )
+    .exec(http("send_name")
+      .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
+
+    .exec(http("enter_nino_page")
+      .get("/enter-nino")
+      .check(status.is(200))
+    )
     .exec(http("send_nino")
       .post("/enter-nino").formParam("nino", "QQ123456C").formParam("_csrf", "${csrf_token}"))
 
-    .exec(http("enter_name_page")
-      .get("/enter-name")
-      .check(status.is(200))
-    )
-    .exec(http("send_name")
-      .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
 
     .exec(http("enter_dob_page")
       .get("/enter-dob")
