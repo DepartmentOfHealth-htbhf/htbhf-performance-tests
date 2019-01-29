@@ -36,6 +36,13 @@ class ClaimSimulation extends Simulation {
     .exec(http("send_dob")
       .post("/enter-dob").formParam("dob-day", "1").formParam("dob-month", "11").formParam("dob-year", "1980").formParam("_csrf", "${csrf_token}"))
 
+    .exec(http("are_you_pregnant")
+      .get("/are-you-pregnant")
+      .check(status.is(200))
+    )
+    .exec(http("send_are_you_pregnant")
+      .post("/are-you-pregnant").formParam("areYouPregnant", "true").formParam("_csrf", "${csrf_token}"))
+
   setUp(
     scn.inject(atOnceUsers(numUsers.toInt))
   ).protocols(httpProtocol)
