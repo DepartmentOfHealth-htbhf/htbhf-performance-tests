@@ -1,5 +1,7 @@
 package uk.gov.dhsc.htbhf
 
+import java.time.LocalDate
+
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
@@ -9,6 +11,8 @@ class ClaimSimulation extends Simulation {
   val numUsers = System.getenv("PERF_TEST_NUMBER_OF_USERS")
 
   val httpProtocol = http.baseUrl(baseURl)
+
+  private val today: LocalDate = LocalDate.now()
 
   val scn = scenario("ClaimSimulation")
     .exec(http("enter_name_page")
@@ -41,7 +45,14 @@ class ClaimSimulation extends Simulation {
       .check(status.is(200))
     )
     .exec(http("send_are_you_pregnant")
-      .post("/are-you-pregnant").formParam("areYouPregnant", "true").formParam("_csrf", "${csrf_token}"))
+      .post("/are-you-pregnant")
+      .formParam("areYouPregnant", "yes")
+      .formParam("expectedDeliveryDate-day", today.getDayOfMonth())
+      .formParam("expectedDeliveryDate-month", today.getMonthValue())
+      .formParam("expectedDeliveryDate-year", today.getYear)
+      .formParam("_csrf", "${csrf_token}")
+      .check(status.is(200))
+    )
 
   setUp(
     scn.inject(atOnceUsers(numUsers.toInt))
