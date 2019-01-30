@@ -54,6 +54,19 @@ class ClaimSimulation extends Simulation {
       .check(status.is(200))
     )
 
+    .exec(http("card_address")
+        .get("/card-address")
+        .check(status.is(200))
+    )
+    .exec(http("send_card_address")
+      .post("/card-address")
+      .formParam("addressLine1", "Flat B")
+      .formParam("addressLine2", "221 Baker Street")
+      .formParam("townOrCity", "London")
+      .formParam("postcode", "AA1 1AA")
+      .formParam("_csrf", "${csrf_token}")
+    )
+
   setUp(
     scn.inject(atOnceUsers(numUsers.toInt))
   ).protocols(httpProtocol)
