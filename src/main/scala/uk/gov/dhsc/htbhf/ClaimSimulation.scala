@@ -17,7 +17,6 @@ class ClaimSimulation extends Simulation {
   val scn = scenario("ClaimSimulation")
     .exec(http("enter_name_page")
       .get("/enter-name")
-      .check(status.is(200))
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
       )
@@ -27,7 +26,6 @@ class ClaimSimulation extends Simulation {
 
     .exec(http("enter_nino_page")
       .get("/enter-nino")
-      .check(status.is(200))
     )
     .exec(http("send_nino")
       .post("/enter-nino").formParam("nino", "QQ123456C").formParam("_csrf", "${csrf_token}"))
@@ -35,14 +33,12 @@ class ClaimSimulation extends Simulation {
 
     .exec(http("enter_dob_page")
       .get("/enter-dob")
-      .check(status.is(200))
     )
     .exec(http("send_dob")
       .post("/enter-dob").formParam("dob-day", "1").formParam("dob-month", "11").formParam("dob-year", "1980").formParam("_csrf", "${csrf_token}"))
 
     .exec(http("are_you_pregnant")
       .get("/are-you-pregnant")
-      .check(status.is(200))
     )
     .exec(http("send_are_you_pregnant")
       .post("/are-you-pregnant")
@@ -51,7 +47,18 @@ class ClaimSimulation extends Simulation {
       .formParam("expectedDeliveryDate-month", today.getMonthValue())
       .formParam("expectedDeliveryDate-year", today.getYear)
       .formParam("_csrf", "${csrf_token}")
-      .check(status.is(200))
+    )
+
+    .exec(http("card_address")
+        .get("/card-address")
+    )
+    .exec(http("send_card_address")
+      .post("/card-address")
+      .formParam("addressLine1", "Flat B")
+      .formParam("addressLine2", "221 Baker Street")
+      .formParam("townOrCity", "London")
+      .formParam("postcode", "AA1 1AA")
+      .formParam("_csrf", "${csrf_token}")
     )
 
   setUp(
