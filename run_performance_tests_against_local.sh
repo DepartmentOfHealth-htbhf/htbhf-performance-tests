@@ -14,8 +14,10 @@ check_variable_is_set BIN_DIR
 check_variable_is_set GATLING_FOLDER_NAME
 check_variable_is_set GATLING_URL
 check_variable_is_set RESULTS_DIRECTORY
-check_variable_is_set PERF_TESTS_DIR
-check_variable_is_set PERF_TEST_NUMBER_OF_USERS
+check_variable_is_set PERF_TEST_START_NUMBER_OF_USERS
+check_variable_is_set PERF_TEST_END_NUMBER_OF_USERS
+check_variable_is_set THRESHOLD_95TH_PERCENTILE_MILLIS
+check_variable_is_set THRESHOLD_MEAN_MILLIS
 
 export CF_DIR=${PERF_TESTS_DIR}/cloud_foundry
 /bin/bash ${PERF_TESTS_DIR}/install_cf_cli.sh
