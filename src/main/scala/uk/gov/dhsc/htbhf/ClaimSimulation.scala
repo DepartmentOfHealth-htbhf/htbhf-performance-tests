@@ -26,22 +26,13 @@ class ClaimSimulation extends Simulation {
     .exec(http("send_name")
       .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
 
-    .exec(http("enter_nino_page")
-      .get("/enter-nino")
-    )
     .exec(http("send_nino")
       .post("/enter-nino").formParam("nino", "QQ123456C").formParam("_csrf", "${csrf_token}"))
 
 
-    .exec(http("enter_dob_page")
-      .get("/enter-dob")
-    )
     .exec(http("send_dob")
       .post("/enter-dob").formParam("dob-day", "1").formParam("dob-month", "11").formParam("dob-year", "1980").formParam("_csrf", "${csrf_token}"))
 
-    .exec(http("are_you_pregnant")
-      .get("/are-you-pregnant")
-    )
     .exec(http("send_are_you_pregnant")
       .post("/are-you-pregnant")
       .formParam("areYouPregnant", "yes")
@@ -51,9 +42,6 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
-    .exec(http("card_address")
-        .get("/card-address")
-    )
     .exec(http("send_card_address")
       .post("/card-address")
       .formParam("addressLine1", "Flat B")
