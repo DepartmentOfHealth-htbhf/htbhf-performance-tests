@@ -33,7 +33,6 @@ class ClaimSimulation extends Simulation {
     .exec(http("send_nino")
       .post("/enter-nino").formParam("nino", "QQ123456C").formParam("_csrf", "${csrf_token}"))
 
-
     .exec(http("send_dob")
       .post("/enter-dob")
       .formParam("dateOfBirth-day", "1")
