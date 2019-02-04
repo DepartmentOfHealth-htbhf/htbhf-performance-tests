@@ -31,7 +31,11 @@ class ClaimSimulation extends Simulation {
 
 
     .exec(http("send_dob")
-      .post("/enter-dob").formParam("dob-day", "1").formParam("dob-month", "11").formParam("dob-year", "1980").formParam("_csrf", "${csrf_token}"))
+      .post("/enter-dob")
+      .formParam("dateOfBirth-day", "1")
+      .formParam("dateOfBirth-month", "11")
+      .formParam("dateOfBirth-year", "1980")
+      .formParam("_csrf", "${csrf_token}"))
 
     .exec(http("send_are_you_pregnant")
       .post("/are-you-pregnant")
@@ -50,6 +54,10 @@ class ClaimSimulation extends Simulation {
       .formParam("postcode", "AA1 1AA")
       .formParam("_csrf", "${csrf_token}")
     )
+
+    .exec(http("submit")
+      .post("/check")
+      .formParam("_csrf", "${csrf_token}"))
 
   setUp(
     scn.inject(atOnceUsers(numUsers.toInt))
