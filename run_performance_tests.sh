@@ -19,7 +19,7 @@ check_variable_is_set CF_PASS
 check_variable_is_set CF_ORG
 check_variable_is_set CF_SPACE
 check_variable_is_set CF_PUBLIC_DOMAIN
-check_variable_is_set RESULTS_DIRECTORY
+check_variable_is_set PERFORMANCE_RESULTS_DIRECTORY
 check_variable_is_set PERF_TESTS_DIR
 check_variable_is_set PERF_TEST_START_NUMBER_OF_USERS
 check_variable_is_set PERF_TEST_END_NUMBER_OF_USERS
@@ -48,6 +48,6 @@ ROUTE_PREFIX=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1)
 cf map-route ${UI_APP_NAME} ${CF_PUBLIC_DOMAIN} --hostname ${ROUTE_PREFIX}
 export BASE_URL="https://$ROUTE_PREFIX.${CF_PUBLIC_DOMAIN}"
 
-${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf ${PERF_TESTS_DIR}/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${RESULTS_DIRECTORY}
+${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf ${PERF_TESTS_DIR}/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}
 
 cf delete-route -f ${CF_PUBLIC_DOMAIN} --hostname=${ROUTE_PREFIX}
