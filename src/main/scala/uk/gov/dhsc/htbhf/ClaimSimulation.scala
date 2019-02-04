@@ -9,6 +9,8 @@ class ClaimSimulation extends Simulation {
 
   val baseURl = System.getenv("BASE_URL")
   val numUsers = System.getenv("PERF_TEST_NUMBER_OF_USERS")
+  val responseTimeThresholdFor95thPercentile = System.getenv("THRESHOLD_95TH_PERCENTILE_MILLIS")
+  val responseTimeThresholdForMean = System.getenv("THRESHOLD_MEAN_MILLIS")
 
   val httpProtocol = http.baseUrl(baseURl)
 
@@ -64,5 +66,11 @@ class ClaimSimulation extends Simulation {
   setUp(
     scn.inject(atOnceUsers(numUsers.toInt))
   ).protocols(httpProtocol)
+    .assertions(
+      global.successfulRequests.percent.is(100),
+      // percentile3 default is 95th percentile, see https://gatling.io/docs/2.3/general/assertions/
+      global.responseTime.percentile3.lt(responseTimeThresholdFor95thPercentile.toInt),
+      global.responseTime.mean.lt(responseTimeThresholdForMean.toInt)
+    )
 
 }
