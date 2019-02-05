@@ -13,7 +13,7 @@ check_variable_is_set(){
 check_variable_is_set BIN_DIR
 check_variable_is_set GATLING_FOLDER_NAME
 check_variable_is_set GATLING_URL
-check_variable_is_set RESULTS_DIRECTORY
+check_variable_is_set PERFORMANCE_RESULTS_DIRECTORY
 check_variable_is_set PERF_TEST_START_NUMBER_OF_USERS
 check_variable_is_set PERF_TEST_END_NUMBER_OF_USERS
 check_variable_is_set THRESHOLD_95TH_PERCENTILE_MILLIS
@@ -35,4 +35,4 @@ fi
 
 export BASE_URL="http://localhost:8080"
 
-${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf ${PERF_TESTS_DIR}/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${RESULTS_DIRECTORY}
+${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf ${PERF_TESTS_DIR}/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}
