@@ -25,6 +25,7 @@ check_variable_is_set PERF_TEST_START_NUMBER_OF_USERS
 check_variable_is_set PERF_TEST_END_NUMBER_OF_USERS
 check_variable_is_set THRESHOLD_95TH_PERCENTILE_MILLIS
 check_variable_is_set THRESHOLD_MEAN_MILLIS
+check_variable_is_set UI_APP_NAME
 
 export CF_DIR=${PERF_TESTS_DIR}/cloud_foundry
 /bin/bash ${PERF_TESTS_DIR}/install_cf_cli.sh
