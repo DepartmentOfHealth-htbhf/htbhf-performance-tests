@@ -13,7 +13,7 @@ object RunGatlingTests {
     val props = new GatlingPropertiesBuilder
     val config = props
       .simulationClass("uk.gov.dhsc.htbhf.ClaimSimulation")
-      .runDescription("Performance tests")
+      .runDescription("Web-UI performance tests")
       .resultsDirectory(resultsDir)
       .build
     Gatling.fromMap(config)
