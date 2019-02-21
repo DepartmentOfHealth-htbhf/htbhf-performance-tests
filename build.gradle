@@ -1,5 +1,6 @@
 plugins {
     id 'org.shipkit.java' version '2.0.31'
+    id "com.github.johnrengelman.shadow" version "4.0.4"
 }
 
 apply plugin: 'scala'
@@ -11,7 +12,8 @@ repositories {
 
 dependencies {
     implementation 'org.scala-lang:scala-library:2.12.8'
-    implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.0.1.1'
+    implementation 'io.gatling.highcharts:gatling-charts-highcharts:3.0.3'
+    implementation 'org.zeroturnaround:zt-zip:1.13'
 }
 
 task copyRunScript(type: Copy) {
@@ -24,6 +26,17 @@ task copyInstallCFScript(type: Copy) {
     into 'src/main/resources'
 }
 
+task copyManifest(type: Copy) {
+    from 'manifest.yml'
+    into 'src/main/resources'
+}
+
 processResources{
-    dependsOn copyRunScript, copyInstallCFScript
+    dependsOn copyRunScript, copyInstallCFScript, copyManifest
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'uk.gov.dhsc.htbhf.RunGatlingTests'
+    }
 }
