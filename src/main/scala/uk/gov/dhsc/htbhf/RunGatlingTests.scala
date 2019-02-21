@@ -16,9 +16,18 @@ object RunGatlingTests {
       .runDescription("Web-UI performance tests")
       .resultsDirectory(resultsDir)
       .build
-    Gatling.fromMap(config)
-    System.out.println("Finished running gatling tests - zipping to " + resultsZip.getAbsolutePath)
-    ZipUtil.pack(new File(resultsDir), resultsZip)
+    try {
+      val result = Gatling.fromMap(config)
+      // write the result to system.out so we can identify success or failure from the logs
+      System.out.println("Finished running gatling tests - result=" + result)
+      System.out.println("Zipping reports to " + resultsZip.getAbsolutePath)
+      ZipUtil.pack(new File(resultsDir), resultsZip)
+    } catch {
+      case e: Exception => {
+        System.out.println("Finished running gatling tests - result=1")
+        e.printStackTrace()
+      }
+    }
     // cloud foundry will try to restart the application if it quits (re-running the performance tests)
     // so we need to keep going until stopped externally
     while ( { true }) {
