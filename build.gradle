@@ -39,4 +39,6 @@ jar {
     manifest {
         attributes 'Main-Class': 'uk.gov.dhsc.htbhf.RunGatlingTests'
     }
+    enabled = false
+    dependsOn(shadowJar { classifier = null })
 }
