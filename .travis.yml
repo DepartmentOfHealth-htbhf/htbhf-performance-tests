@@ -1,5 +1,5 @@
 language: scala
 
-script: ./gradlew clean build check shadowJar
+script: ./gradlew clean build check
 
 after_script: test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && ./gradlew ciPerformRelease -s
