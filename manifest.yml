@@ -1,0 +1,14 @@
+---
+applications:
+- name: htbhf-performance-tests
+  memory: 512M
+  buildpacks:
+    - java_buildpack
+  health-check-type: none
+  no-route: true
+  env:
+    BASE_URL: ((base_url))
+    PERF_TEST_START_NUMBER_OF_USERS: 1
+    PERF_TEST_END_NUMBER_OF_USERS: 100
+    THRESHOLD_95TH_PERCENTILE_MILLIS: 1000
+    THRESHOLD_MEAN_MILLIS: 500
