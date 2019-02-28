@@ -6,3 +6,5 @@ gatling-results/
 /src/main/resources/run_performance_tests.sh
 /src/main/resources/install_cf_cli.sh
 /src/main/resources/manifest.yml
+performance-test-results/
+performance-test-results.zip
