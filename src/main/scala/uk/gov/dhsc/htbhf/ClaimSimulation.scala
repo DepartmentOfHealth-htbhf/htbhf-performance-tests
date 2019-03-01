@@ -10,11 +10,12 @@ import scala.language.postfixOps
 
 class ClaimSimulation extends Simulation {
 
-  val baseURl = System.getenv("BASE_URL")
-  val numStartUsers = System.getenv("PERF_TEST_START_NUMBER_OF_USERS").toInt
-  val numEndUsers = System.getenv("PERF_TEST_END_NUMBER_OF_USERS").toInt
-  val responseTimeThresholdFor95thPercentile = System.getenv("THRESHOLD_95TH_PERCENTILE_MILLIS").toInt
-  val responseTimeThresholdForMean = System.getenv("THRESHOLD_MEAN_MILLIS").toInt
+  val baseURl = sys.env("BASE_URL")
+  val numStartUsers = sys.env("PERF_TEST_START_NUMBER_OF_USERS").toInt
+  val numEndUsers = sys.env("PERF_TEST_END_NUMBER_OF_USERS").toInt
+  val soakTestDuration = sys.env("PERF_TEST_SOAK_TEST_DURATION_MINUTES").toInt
+  val responseTimeThresholdFor95thPercentile = sys.env("THRESHOLD_95TH_PERCENTILE_MILLIS").toInt
+  val responseTimeThresholdForMean = sys.env("THRESHOLD_MEAN_MILLIS").toInt
 
   val httpProtocol = http.baseUrl(baseURl)
 
@@ -63,7 +64,8 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}"))
 
   setUp(
-    scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes) randomized)
+    scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+      constantUsersPerSec(numEndUsers) during (soakTestDuration minutes) )
   ).protocols(httpProtocol)
     .assertions(
       global.successfulRequests.percent.is(100),
