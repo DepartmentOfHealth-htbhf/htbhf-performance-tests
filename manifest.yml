@@ -1,4 +1,6 @@
 ---
+# This manifest is not used when the performance tests are run in the CD pipeline.
+# See the 'write_perf_test_manifest' method of cd_functions.sh in htbhf-continuous-delivery
 applications:
 - name: htbhf-performance-tests
   memory: 1G
