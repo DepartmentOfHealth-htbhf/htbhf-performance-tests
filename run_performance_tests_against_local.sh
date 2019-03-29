@@ -10,18 +10,18 @@ check_variable_is_set(){
     fi
 }
 
-check_variable_is_set BIN_DIR
-check_variable_is_set GATLING_FOLDER_NAME
-check_variable_is_set GATLING_URL
-check_variable_is_set PERFORMANCE_RESULTS_DIRECTORY
-check_variable_is_set PERF_TEST_START_NUMBER_OF_USERS
-check_variable_is_set PERF_TEST_END_NUMBER_OF_USERS
-check_variable_is_set THRESHOLD_95TH_PERCENTILE_MILLIS
-check_variable_is_set THRESHOLD_MEAN_MILLIS
+# rename RunGatlingTests.scala so that Gatling doesn't try to compile it
+mv src/main/scala/uk/gov/dhsc/htbhf/RunGatlingTests.scala src/main/scala/uk/gov/dhsc/htbhf/RunGatlingTests.scala.tmp
 
-export CF_DIR=${PERF_TESTS_DIR}/cloud_foundry
-/bin/bash ${PERF_TESTS_DIR}/install_cf_cli.sh
-export PATH=${PATH}:${CF_DIR}
+export BIN_DIR="./bin"
+export GATLING_FOLDER_NAME="gatling-charts-highcharts-bundle-3.0.1.1"
+export GATLING_URL="http://localhost:8080"
+export PERFORMANCE_RESULTS_DIRECTORY="./performance-test-results"
+export PERF_TEST_START_NUMBER_OF_USERS="1"
+export PERF_TEST_END_NUMBER_OF_USERS="25"
+export PERF_TEST_SOAK_TEST_DURATION_MINUTES="1"
+export THRESHOLD_95TH_PERCENTILE_MILLIS="2000"
+export THRESHOLD_MEAN_MILLIS="800"
 
 if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
   echo "Downloading gatling"
@@ -35,4 +35,8 @@ fi
 
 export BASE_URL="http://localhost:8080"
 
-${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf ${PERF_TESTS_DIR}/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}
+echo "${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf src/main/scala/uk/gov/dhsc/htbhf --run-description \"Performance tests\" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}"
+${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf src/main/scala/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}
+
+# rename RunGatlingTests.scala
+mv src/main/scala/uk/gov/dhsc/htbhf/RunGatlingTests.scala.tmp src/main/scala/uk/gov/dhsc/htbhf/RunGatlingTests.scala
