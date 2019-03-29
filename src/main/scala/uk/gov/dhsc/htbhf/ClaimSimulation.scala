@@ -1,11 +1,13 @@
 package uk.gov.dhsc.htbhf
 
+import java.text.NumberFormat
 import java.time.LocalDate
+import java.util.Random
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import scala.concurrent.duration._
 
+import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class ClaimSimulation extends Simulation {
@@ -21,7 +23,25 @@ class ClaimSimulation extends Simulation {
 
   private val today: LocalDate = LocalDate.now()
 
+  private val random = new Random
+  private val ninoFormat = getNinoFormat
+
+  private def getNinoFormat = {
+    val ninoFormat = NumberFormat.getInstance
+    ninoFormat.setMaximumFractionDigits(0)
+    ninoFormat.setMinimumIntegerDigits(6)
+    ninoFormat.setGroupingUsed(false)
+    ninoFormat
+  }
+
+  val randomNinos = Iterator.continually(
+    // Random number will be accessible in session under variable "OrderRef"
+    Map("nino" -> {
+      "QQ" + ninoFormat.format(random.nextInt(999999)) + "D"
+    })
+  )
   val scn = scenario("ClaimSimulation")
+    .feed(randomNinos)
     .exec(http("enter_name_page")
       .get("/enter-name")
       .check(
@@ -32,7 +52,7 @@ class ClaimSimulation extends Simulation {
       .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
 
     .exec(http("send_nino")
-      .post("/enter-nino").formParam("nino", "QQ123456C").formParam("_csrf", "${csrf_token}"))
+      .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token}"))
 
     .exec(http("send_dob")
       .post("/enter-dob")
@@ -65,7 +85,7 @@ class ClaimSimulation extends Simulation {
 
   setUp(
     scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
-      constantUsersPerSec(numEndUsers) during (soakTestDuration minutes) )
+      constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
   ).protocols(httpProtocol)
     .assertions(
       global.successfulRequests.percent.is(100),
