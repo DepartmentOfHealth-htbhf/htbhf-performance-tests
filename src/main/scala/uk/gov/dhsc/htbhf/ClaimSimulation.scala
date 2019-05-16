@@ -34,10 +34,15 @@ class ClaimSimulation extends Simulation {
     ninoFormat
   }
 
+  private def getRandomAlphabetCharAsString() = {
+    val randomChar = (random.nextInt(26) + 'A').asInstanceOf[Char]
+    randomChar.toString
+  }
+
   val randomNinos = Iterator.continually(
     // Random number will be accessible in session under variable "OrderRef"
     Map("nino" -> {
-      "QQ" + ninoFormat.format(random.nextInt(999999)) + "D"
+      getRandomAlphabetCharAsString + getRandomAlphabetCharAsString + ninoFormat.format(random.nextInt(999999)) + "D"
     })
   )
   val scn = scenario("ClaimSimulation")
