@@ -47,17 +47,13 @@ class ClaimSimulation extends Simulation {
   )
   val scn = scenario("ClaimSimulation")
     .feed(randomNinos)
-    .exec(http("enter_name_page")
-      .get("/enter-name")
+
+    .exec(http("enter-dob-page")
+      .get("/enter-dob")
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
       )
     )
-    .exec(http("send_name")
-      .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
-
-    .exec(http("send_nino")
-      .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token}"))
 
     .exec(http("send_dob")
       .post("/enter-dob")
@@ -75,6 +71,13 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
+    .exec(http("send_name")
+      .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
+
+    .exec(http("send_nino")
+      .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token}"))
+
+
     .exec(http("send_card_address")
       .post("/card-address")
       .formParam("addressLine1", "Flat B")
@@ -84,19 +87,25 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
-    .exec(http("submit")
-      .post("/check")
-      .formParam("_csrf", "${csrf_token}"))
-
-  setUp(
-    scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
-      constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
-  ).protocols(httpProtocol)
-    .assertions(
-      global.successfulRequests.percent.is(100),
-      // percentile3 default is 95th percentile, see https://gatling.io/docs/2.3/general/assertions/
-      global.responseTime.percentile3.lt(responseTimeThresholdFor95thPercentile),
-      global.responseTime.mean.lt(responseTimeThresholdForMean)
+    .exec(http("send_phone_number")
+      .post("/phone-number")
+      .formParam("phoneNumber", "07123456789")
+      .formParam("_csrf", "${csrf_token}")
     )
+
+      .exec(http("submit")
+        .post("/check")
+        .formParam("_csrf", "${csrf_token}"))
+
+      setUp (
+      scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+        constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
+      ).protocols(httpProtocol)
+      .assertions(
+        global.successfulRequests.percent.is(100),
+        // percentile3 default is 95th percentile, see https://gatling.io/docs/2.3/general/assertions/
+        global.responseTime.percentile3.lt(responseTimeThresholdFor95thPercentile),
+        global.responseTime.mean.lt(responseTimeThresholdForMean)
+      )
 
 }
