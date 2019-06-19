@@ -93,6 +93,12 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
+    .exec(http("send_email_address")
+      .post("/email-address")
+      .formParam("emailAddress", "test@email.com")
+      .formParam("_csrf", "${csrf_token}")
+    )
+
       .exec(http("submit")
         .post("/check")
         .formParam("_csrf", "${csrf_token}"))
