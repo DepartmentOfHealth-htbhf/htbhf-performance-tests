@@ -48,12 +48,22 @@ class ClaimSimulation extends Simulation {
   val scn = scenario("ClaimSimulation")
     .feed(randomNinos)
 
-    .exec(http("enter-dob-page")
-      .get("/enter-dob")
+    .exec(http("do-you-live-in-scotland")
+      .get("/do-you-live-in-scotland")
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
       )
     )
+
+    .exec(http("send_do_you_live_in_scotland_no")
+      .post("/do-you-live-in-scotland")
+      .formParam("doYouLiveInScotland", "no")
+      .formParam("_csrf", "${csrf_token}"))
+
+    .exec(http("send_do_you_live_in_scotland_yes")
+      .post("/do-you-live-in-scotland")
+      .formParam("doYouLiveInScotland", "yes")
+      .formParam("_csrf", "${csrf_token}"))
 
     .exec(http("send_dob")
       .post("/enter-dob")
@@ -67,7 +77,7 @@ class ClaimSimulation extends Simulation {
       .formParam("areYouPregnant", "yes")
       .formParam("expectedDeliveryDate-day", today.getDayOfMonth())
       .formParam("expectedDeliveryDate-month", today.getMonthValue())
-      .formParam("expectedDeliveryDate-year", today.getYear)
+      .formParam("expectedDeliveryDate-year", today.getYear())
       .formParam("_csrf", "${csrf_token}")
     )
 
