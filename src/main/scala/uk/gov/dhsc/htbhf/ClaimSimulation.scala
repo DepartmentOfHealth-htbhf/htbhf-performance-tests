@@ -109,9 +109,12 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
-      .exec(http("submit")
-        .post("/check")
-        .formParam("_csrf", "${csrf_token}"))
+    .exec(http("accept_terms_and_conditions")
+      .post("/terms-and-conditions")
+      .formParam("agree", "agree")
+      .formParam("_csrf", "${csrf_token}")
+     )
+
 
       setUp (
       scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
