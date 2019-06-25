@@ -65,6 +65,14 @@ class ClaimSimulation extends Simulation {
       .formParam("doYouLiveInScotland", "yes")
       .formParam("_csrf", "${csrf_token}"))
 
+    //Need to get the csrf token again as the 'Yes' page for Do You Live In Scotland kills the session.
+    .exec(http("do-you-live-in-scotland")
+      .get("/do-you-live-in-scotland")
+      .check(
+        regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
+      )
+    )
+
     .exec(http("send_dob")
       .post("/enter-dob")
       .formParam("dateOfBirth-day", "1")
@@ -113,18 +121,18 @@ class ClaimSimulation extends Simulation {
       .post("/terms-and-conditions")
       .formParam("agree", "agree")
       .formParam("_csrf", "${csrf_token}")
-     )
+    )
 
 
-      setUp (
-      scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
-        constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
-      ).protocols(httpProtocol)
-      .assertions(
-        global.successfulRequests.percent.is(100),
-        // percentile3 default is 95th percentile, see https://gatling.io/docs/2.3/general/assertions/
-        global.responseTime.percentile3.lt(responseTimeThresholdFor95thPercentile),
-        global.responseTime.mean.lt(responseTimeThresholdForMean)
-      )
+  setUp(
+    scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+      constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
+  ).protocols(httpProtocol)
+    .assertions(
+      global.successfulRequests.percent.is(100),
+      // percentile3 default is 95th percentile, see https://gatling.io/docs/2.3/general/assertions/
+      global.responseTime.percentile3.lt(responseTimeThresholdFor95thPercentile),
+      global.responseTime.mean.lt(responseTimeThresholdForMean)
+    )
 
 }
