@@ -45,13 +45,31 @@ class ClaimSimulation extends Simulation {
       getRandomAlphabetCharAsString + getRandomAlphabetCharAsString + ninoFormat.format(random.nextInt(999999)) + "D"
     })
   )
-  val scn = scenario("ClaimSimulation")
-    .feed(randomNinos)
 
-    .exec(http("do-you-live-in-scotland")
+
+  val scotland = feed(randomNinos)
+
+    .exec(http("do-you-live-in-scotland-1")
       .get("/do-you-live-in-scotland")
       .check(
-        regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
+        regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
+          .saveAs("csrf_token")
+      )
+    )
+
+    .exec(http("send_do_you_live_in_scotland_yes")
+      .post("/do-you-live-in-scotland")
+      .formParam("doYouLiveInScotland", "yes")
+      .formParam("_csrf", "${csrf_token}"))
+
+
+  val fullClaim = feed(randomNinos)
+
+    .exec(http("do-you-live-in-scotland-2")
+      .get("/do-you-live-in-scotland")
+      .check(
+        regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
+          .saveAs("csrf_token")
       )
     )
 
@@ -59,19 +77,6 @@ class ClaimSimulation extends Simulation {
       .post("/do-you-live-in-scotland")
       .formParam("doYouLiveInScotland", "no")
       .formParam("_csrf", "${csrf_token}"))
-
-    .exec(http("send_do_you_live_in_scotland_yes")
-      .post("/do-you-live-in-scotland")
-      .formParam("doYouLiveInScotland", "yes")
-      .formParam("_csrf", "${csrf_token}"))
-
-    //Need to get the csrf token again as the 'Yes' page for Do You Live In Scotland kills the session.
-    .exec(http("do-you-live-in-scotland")
-      .get("/do-you-live-in-scotland")
-      .check(
-        regex("""<input type="hidden" name="_csrf" value="([^"]+)"""").saveAs("csrf_token")
-      )
-    )
 
     .exec(http("send_dob")
       .post("/enter-dob")
@@ -123,9 +128,10 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
+  val allScenarios = scenario("All scenarios").exec(scotland, fullClaim)
 
   setUp(
-    scn.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+    allScenarios.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
       constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
   ).protocols(httpProtocol)
     .assertions(
