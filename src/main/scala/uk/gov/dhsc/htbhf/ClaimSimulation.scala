@@ -49,41 +49,41 @@ class ClaimSimulation extends Simulation {
 
   val scotland = feed(randomNinos)
 
-    .exec(http("do-you-live-in-scotland-1")
+    .exec(http("do-you-live-in-scotland-yes")
       .get("/do-you-live-in-scotland")
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
-          .saveAs("csrf_token")
+          .saveAs("csrf_token1")
       )
     )
 
     .exec(http("send_do_you_live_in_scotland_yes")
       .post("/do-you-live-in-scotland")
       .formParam("doYouLiveInScotland", "yes")
-      .formParam("_csrf", "${csrf_token}"))
+      .formParam("_csrf", "${csrf_token1}"))
 
 
   val fullClaim = feed(randomNinos)
 
-    .exec(http("do-you-live-in-scotland-2")
+    .exec(http("do-you-live-in-scotland-no")
       .get("/do-you-live-in-scotland")
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
-          .saveAs("csrf_token")
+          .saveAs("csrf_token2")
       )
     )
 
     .exec(http("send_do_you_live_in_scotland_no")
       .post("/do-you-live-in-scotland")
       .formParam("doYouLiveInScotland", "no")
-      .formParam("_csrf", "${csrf_token}"))
+      .formParam("_csrf", "${csrf_token2}"))
 
     .exec(http("send_dob")
       .post("/enter-dob")
       .formParam("dateOfBirth-day", "1")
       .formParam("dateOfBirth-month", "11")
       .formParam("dateOfBirth-year", "1980")
-      .formParam("_csrf", "${csrf_token}"))
+      .formParam("_csrf", "${csrf_token2}"))
 
     .exec(http("send_are_you_pregnant")
       .post("/are-you-pregnant")
@@ -91,14 +91,14 @@ class ClaimSimulation extends Simulation {
       .formParam("expectedDeliveryDate-day", today.getDayOfMonth())
       .formParam("expectedDeliveryDate-month", today.getMonthValue())
       .formParam("expectedDeliveryDate-year", today.getYear())
-      .formParam("_csrf", "${csrf_token}")
+      .formParam("_csrf", "${csrf_token2}")
     )
 
     .exec(http("send_name")
-      .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token}"))
+      .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token2}"))
 
     .exec(http("send_nino")
-      .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token}"))
+      .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token2}"))
 
 
     .exec(http("send_card_address")
@@ -107,31 +107,34 @@ class ClaimSimulation extends Simulation {
       .formParam("addressLine2", "221 Baker Street")
       .formParam("townOrCity", "London")
       .formParam("postcode", "AA1 1AA")
-      .formParam("_csrf", "${csrf_token}")
+      .formParam("_csrf", "${csrf_token2}")
     )
 
     .exec(http("send_phone_number")
       .post("/phone-number")
       .formParam("phoneNumber", "07123456789")
-      .formParam("_csrf", "${csrf_token}")
+      .formParam("_csrf", "${csrf_token2}")
     )
 
     .exec(http("send_email_address")
       .post("/email-address")
       .formParam("emailAddress", "test@email.com")
-      .formParam("_csrf", "${csrf_token}")
+      .formParam("_csrf", "${csrf_token2}")
     )
 
     .exec(http("accept_terms_and_conditions")
       .post("/terms-and-conditions")
       .formParam("agree", "agree")
-      .formParam("_csrf", "${csrf_token}")
+      .formParam("_csrf", "${csrf_token2}")
     )
 
-  val allScenarios = scenario("All scenarios").exec(scotland, fullClaim)
+  val scottishScenario = scenario("Scottish Scenario").exec(scotland)
+  val fullScenarios = scenario("Full scenarios").exec(fullClaim)
 
   setUp(
-    allScenarios.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+    scottishScenario.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+      constantUsersPerSec(numEndUsers) during (soakTestDuration minutes)),
+    fullScenarios.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
       constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
   ).protocols(httpProtocol)
     .assertions(
