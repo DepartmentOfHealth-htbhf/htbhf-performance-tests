@@ -117,9 +117,9 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
-    .exec(http("choose_channel_for_code")
-      .post("/choose-channel-for-code")
-      .formParam("chooseChannelForCode", "text")
+    .exec(http("send_code")
+      .post("/send-code")
+      .formParam("sendCode", "text")
       .formParam("_csrf", "${csrf_token}")
     )
 
