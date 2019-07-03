@@ -128,6 +128,13 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token}")
     )
 
+    // TODO DW HTBHF-1702 Update to send code that was generated for the user
+    .exec(http("enter_code")
+      .post("/enter-code")
+      .formParam("confirmationCode", "123456")
+      .formParam("_csrf", "${csrf_token}")
+    )
+
     .exec(http("accept_terms_and_conditions")
       .post("/terms-and-conditions")
       .formParam("agree", "agree")
