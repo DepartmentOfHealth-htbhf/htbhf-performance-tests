@@ -26,6 +26,8 @@ class ClaimSimulation extends Simulation {
   private val random = new Random
   private val ninoFormat = getNinoFormat
 
+  private val dateAYearAgo: LocalDate = LocalDate.now().minusYears(1)
+
   private def getNinoFormat = {
     val ninoFormat = NumberFormat.getInstance
     ninoFormat.setMaximumFractionDigits(0)
@@ -85,6 +87,19 @@ class ClaimSimulation extends Simulation {
       .formParam("dateOfBirth-year", "1980")
       .formParam("_csrf", "${csrf_token2}"))
 
+    .exec(http("send_do_you_have_children_three_or_younger")
+      .post("/do-you-have-children-three-or-younger")
+      .formParam("doYouHaveChildrenThreeOrYounger", "yes")
+      .formParam("_csrf", "${csrf_token2}"))
+
+    .exec(http("send_children_dob")
+      .post("/children-dob")
+      .formParam("childName-1", "Joe")
+      .formParam("childDob-1-day", dateAYearAgo.getDayOfMonth())
+      .formParam("childDob-1-month", dateAYearAgo.getMonthValue())
+      .formParam("childDob-1-year", dateAYearAgo.getYear())
+      .formParam("_csrf", "${csrf_token2}"))
+
     .exec(http("send_are_you_pregnant")
       .post("/are-you-pregnant")
       .formParam("areYouPregnant", "yes")
@@ -125,14 +140,14 @@ class ClaimSimulation extends Simulation {
     .exec(http("send_code")
       .post("/send-code")
       .formParam("channelForCode", "text")
-      .formParam("_csrf", "${csrf_token}")
+      .formParam("_csrf", "${csrf_token2}")
     )
 
     // TODO DW HTBHF-1702 Update to send code that was generated for the user
     .exec(http("enter_code")
       .post("/enter-code")
       .formParam("confirmationCode", "123456")
-      .formParam("_csrf", "${csrf_token}")
+      .formParam("_csrf", "${csrf_token2}")
     )
 
     .exec(http("accept_terms_and_conditions")
