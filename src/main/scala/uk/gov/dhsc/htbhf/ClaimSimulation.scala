@@ -1,5 +1,6 @@
 package uk.gov.dhsc.htbhf
 
+import java.net.URI
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.Random
@@ -13,6 +14,8 @@ import scala.language.postfixOps
 class ClaimSimulation extends Simulation {
 
   val baseURl = sys.env("BASE_URL")
+  val sessionDetailsBaseURl = sys.env("SESSION_DETAILS_BASE_URL")
+  var sessionDetailsDomain = new URI(sessionDetailsBaseURl).getHost
   val numStartUsers = sys.env("PERF_TEST_START_NUMBER_OF_USERS").toInt
   val numEndUsers = sys.env("PERF_TEST_END_NUMBER_OF_USERS").toInt
   val soakTestDuration = sys.env("PERF_TEST_SOAK_TEST_DURATION_MINUTES").toInt
@@ -72,8 +75,10 @@ class ClaimSimulation extends Simulation {
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
           .saveAs("csrf_token2")
-      )
+      ).check( headerRegex(HttpHeaderNames.SetCookie, "htbhf.sid=(.*)").saveAs("sid") )
     )
+
+    .exec(addCookie((Cookie("htbhf.sid", "${sid}").withDomain(sessionDetailsDomain))))
 
     .exec(http("send_do_you_live_in_scotland_no")
       .post("/do-you-live-in-scotland")
@@ -143,10 +148,14 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token2}")
     )
 
-    // TODO DW HTBHF-1702 Update to send code that was generated for the user
+    .exec(http("get unique code from session")
+      .get(sessionDetailsBaseURl + "/session-details/confirmation-code")
+      .check(bodyString.saveAs("confirmationCode"))
+    )
+
     .exec(http("enter_code")
       .post("/enter-code")
-      .formParam("confirmationCode", "123456")
+      .formParam("confirmationCode", "${confirmationCode}")
       .formParam("_csrf", "${csrf_token2}")
     )
 
