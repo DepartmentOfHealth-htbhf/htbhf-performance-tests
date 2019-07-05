@@ -149,7 +149,7 @@ class ClaimSimulation extends Simulation {
     )
 
     .exec(http("get unique code from session")
-      .get(sessionDetailsBaseURl + "confirmation-code")
+      .get(sessionDetailsBaseURl + "/session-details/confirmation-code")
       .check(bodyString.saveAs("confirmationCode"))
     )
 
