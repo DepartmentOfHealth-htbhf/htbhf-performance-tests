@@ -15,7 +15,7 @@ mv src/main/scala/uk/gov/dhsc/htbhf/RunGatlingTests.scala src/main/scala/uk/gov/
 
 export BIN_DIR="./bin"
 export GATLING_FOLDER_NAME="gatling-charts-highcharts-bundle-3.0.1.1"
-export GATLING_URL="http://localhost:8080"
+export GATLING_URL="https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/3.0.1.1/gatling-charts-highcharts-bundle-3.0.1.1-bundle.zip"
 export PERFORMANCE_RESULTS_DIRECTORY="./performance-test-results"
 export PERF_TEST_START_NUMBER_OF_USERS="1"
 export PERF_TEST_END_NUMBER_OF_USERS="25"
@@ -34,6 +34,7 @@ if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
 fi
 
 export BASE_URL="http://localhost:8080"
+export SESSION_DETAILS_BASE_URL="http://localhost:8081/"
 
 echo "${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf src/main/scala/uk/gov/dhsc/htbhf --run-description \"Performance tests\" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}"
 ${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf src/main/scala/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}
