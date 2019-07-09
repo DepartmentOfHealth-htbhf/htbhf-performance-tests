@@ -30,4 +30,4 @@ in htbhf-applicant-web-ui for more details.
 
 ## Running the tests against your local machine
 First start the session-details-app locally (see above).
-Then run `./run_performance_tests.sh`
+Then run `./run_performance_tests_against_local.sh`
