@@ -121,8 +121,8 @@ class ClaimSimulation extends Simulation {
       .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token2}"))
 
 
-    .exec(http("send_card_address")
-      .post("/card-address")
+    .exec(http("send_address")
+      .post("/address")
       .formParam("addressLine1", "Flat B")
       .formParam("addressLine2", "221 Baker Street")
       .formParam("townOrCity", "London")
