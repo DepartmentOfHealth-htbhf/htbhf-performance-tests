@@ -34,7 +34,7 @@ if [[ ! -e ${BIN_DIR}/${GATLING_FOLDER_NAME} ]]; then
 fi
 
 export BASE_URL="http://localhost:8080"
-export SESSION_DETAILS_BASE_URL="http://localhost:8081/"
+export SESSION_DETAILS_BASE_URL="http://localhost:8081"
 
 echo "${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf src/main/scala/uk/gov/dhsc/htbhf --run-description \"Performance tests\" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}"
 ${BIN_DIR}/${GATLING_FOLDER_NAME}/bin/gatling.sh -sf src/main/scala/uk/gov/dhsc/htbhf --run-description "Performance tests" --results-folder ${PERFORMANCE_RESULTS_DIRECTORY}
