@@ -92,9 +92,9 @@ class ClaimSimulation extends Simulation {
       .formParam("dateOfBirth-year", "1980")
       .formParam("_csrf", "${csrf_token2}"))
 
-    .exec(http("send_do_you_have_children_three_or_younger")
-      .post("/do-you-have-children-three-or-younger")
-      .formParam("doYouHaveChildrenThreeOrYounger", "yes")
+    .exec(http("send_do_you_have_children")
+      .post("/do-you-have-children")
+      .formParam("doYouHaveChildren", "yes")
       .formParam("_csrf", "${csrf_token2}"))
 
     .exec(http("send_children_dob")
