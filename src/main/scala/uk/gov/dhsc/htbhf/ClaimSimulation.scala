@@ -61,11 +61,13 @@ class ClaimSimulation extends Simulation {
           .saveAs("csrf_token1")
       )
     )
+    .pause(1,2)
 
     .exec(http("send_do_you_live_in_scotland_yes")
       .post("/do-you-live-in-scotland")
       .formParam("doYouLiveInScotland", "yes")
       .formParam("_csrf", "${csrf_token1}"))
+    .pause(1,2)
 
 
   val fullClaim = feed(randomNinos)
@@ -84,6 +86,7 @@ class ClaimSimulation extends Simulation {
       .post("/do-you-live-in-scotland")
       .formParam("doYouLiveInScotland", "no")
       .formParam("_csrf", "${csrf_token2}"))
+    .pause(1,2)
 
     .exec(http("send_dob")
       .post("/enter-dob")
@@ -91,11 +94,13 @@ class ClaimSimulation extends Simulation {
       .formParam("dateOfBirth-month", "11")
       .formParam("dateOfBirth-year", "1980")
       .formParam("_csrf", "${csrf_token2}"))
+    .pause(1,2)
 
     .exec(http("send_do_you_have_children")
       .post("/do-you-have-children")
       .formParam("doYouHaveChildren", "yes")
       .formParam("_csrf", "${csrf_token2}"))
+    .pause(1,2)
 
     .exec(http("send_children_dob")
       .post("/children-dob")
@@ -104,6 +109,7 @@ class ClaimSimulation extends Simulation {
       .formParam("childDob-1-month", dateAYearAgo.getMonthValue())
       .formParam("childDob-1-year", dateAYearAgo.getYear())
       .formParam("_csrf", "${csrf_token2}"))
+    .pause(1,2)
 
     .exec(http("send_are_you_pregnant")
       .post("/are-you-pregnant")
@@ -113,12 +119,15 @@ class ClaimSimulation extends Simulation {
       .formParam("expectedDeliveryDate-year", today.getYear())
       .formParam("_csrf", "${csrf_token2}")
     )
+    .pause(1,2)
 
     .exec(http("send_name")
       .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token2}"))
+    .pause(1,2)
 
     .exec(http("send_nino")
       .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token2}"))
+    .pause(1,2)
 
     .exec(http("send_manual_address")
       .post("/manual-address")
@@ -128,35 +137,41 @@ class ClaimSimulation extends Simulation {
       .formParam("postcode", "AA1 1AA")
       .formParam("_csrf", "${csrf_token2}")
     )
+    .pause(1,2)
 
     .exec(http("send_phone_number")
       .post("/phone-number")
       .formParam("phoneNumber", "07123456789")
       .formParam("_csrf", "${csrf_token2}")
     )
+    .pause(1,2)
 
     .exec(http("send_email_address")
       .post("/email-address")
       .formParam("emailAddress", "test@email.com")
       .formParam("_csrf", "${csrf_token2}")
     )
+    .pause(1,2)
 
     .exec(http("send_code")
       .post("/send-code")
       .formParam("channelForCode", "text")
       .formParam("_csrf", "${csrf_token2}")
     )
+    .pause(1,2)
 
     .exec(http("get unique code from session")
       .get(sessionDetailsBaseURl + "/session-details/confirmation-code")
       .check(bodyString.saveAs("confirmationCode"))
     )
+    .pause(1,2)
 
     .exec(http("enter_code")
       .post("/enter-code")
       .formParam("confirmationCode", "${confirmationCode}")
       .formParam("_csrf", "${csrf_token2}")
     )
+    .pause(1,2)
 
     .exec(http("accept_terms_and_conditions")
       .post("/terms-and-conditions")
