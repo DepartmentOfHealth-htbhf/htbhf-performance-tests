@@ -135,6 +135,7 @@ class ClaimSimulation extends Simulation {
       .formParam("addressLine2", "221 Baker Street")
       .formParam("townOrCity", "London")
       .formParam("postcode", "AA1 1AA")
+      .formParam("county", "Devon")
       .formParam("_csrf", "${csrf_token2}")
     )
     .pause(1,2)
