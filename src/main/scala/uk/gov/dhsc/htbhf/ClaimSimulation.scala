@@ -12,8 +12,6 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.parsing.json.JSON
 
-case class Features(ADDRESS_LOOKUP: Boolean)
-
 class ClaimSimulation extends Simulation {
 
   val baseURl = sys.env("BASE_URL")
@@ -34,7 +32,7 @@ class ClaimSimulation extends Simulation {
 
   private val dateAYearAgo: LocalDate = LocalDate.now().minusYears(1)
 
-  private val features: Map[String, Boolean] = JSON.parseFull(sys.env.getOrElse("FEATURE_TOGGLES", "{}")).get.asInstanceOf [Map[String, Boolean]]
+  private val features: Map[String, Boolean] = JSON.parseFull(sys.env.getOrElse("FEATURE_TOGGLES", "{}")).get.asInstanceOf[Map[String, Boolean]]
 
   private def getNinoFormat = {
     val ninoFormat = NumberFormat.getInstance
@@ -48,23 +46,6 @@ class ClaimSimulation extends Simulation {
     val randomChar = (random.nextInt(26) + 'A').asInstanceOf[Char]
     randomChar.toString
   }
-
-  private def addressStep =
-    if (features.getOrElse("ADDRESS_LOOKUP", false)) {
-      http("send postcode")
-        .post("/postcode")
-        .formParam("postcode", "AA1 1AA")
-        .formParam("_csrf", "${csrf_token2}")
-    }
-    else {
-      http("send_manual_address")
-        .post("/manual-address")
-        .formParam("addressLine1", "Flat B")
-        .formParam("addressLine2", "221 Baker Street")
-        .formParam("townOrCity", "London")
-        .formParam("postcode", "AA1 1AA")
-        .formParam("_csrf", "${csrf_token2}")
-    }
 
   val randomNinos = Iterator.continually(
     // Random number will be accessible in session under variable "OrderRef"
@@ -151,7 +132,28 @@ class ClaimSimulation extends Simulation {
       .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token2}"))
     .pause(1, 2)
 
-    .exec(addressStep)
+    // TODO Randomly have some users use address lookup and others use manual address.
+    // See https://gatling.io/docs/current/general/scenario/#scenario-conditions
+    .doIfEquals(features.getOrElse("ADDRESS_LOOKUP_ENABLED", false), true) {
+      exec(
+        http("send postcode")
+          .post("/postcode")
+          .formParam("postcode", "AA1 1AA")
+          .formParam("_csrf", "${csrf_token2}")
+      )
+      .pause(1, 2)
+    }
+
+    .exec(
+      http("send_manual_address")
+        .post("/manual-address")
+        .formParam("addressLine1", "Flat B")
+        .formParam("addressLine2", "221 Baker Street")
+        .formParam("townOrCity", "London")
+        .formParam("postcode", "AA1 1AA")
+        .formParam("county", "Devon")
+        .formParam("_csrf", "${csrf_token2}")
+    )
     .pause(1, 2)
 
     .exec(http("send_phone_number")
