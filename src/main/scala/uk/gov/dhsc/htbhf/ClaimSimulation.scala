@@ -10,6 +10,9 @@ import io.gatling.http.Predef._
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.parsing.json.JSON
+
+case class Features(ADDRESS_LOOKUP: Boolean)
 
 class ClaimSimulation extends Simulation {
 
@@ -31,6 +34,8 @@ class ClaimSimulation extends Simulation {
 
   private val dateAYearAgo: LocalDate = LocalDate.now().minusYears(1)
 
+  private val features: Map[String, Boolean] = JSON.parseFull(sys.env.getOrElse("FEATURE_TOGGLES", "{}")).get.asInstanceOf [Map[String, Boolean]]
+
   private def getNinoFormat = {
     val ninoFormat = NumberFormat.getInstance
     ninoFormat.setMaximumFractionDigits(0)
@@ -43,6 +48,23 @@ class ClaimSimulation extends Simulation {
     val randomChar = (random.nextInt(26) + 'A').asInstanceOf[Char]
     randomChar.toString
   }
+
+  private def addressStep =
+    if (features.getOrElse("ADDRESS_LOOKUP", false)) {
+      http("send postcode")
+        .post("/postcode")
+        .formParam("postcode", "AA1 1AA")
+        .formParam("_csrf", "${csrf_token2}")
+    }
+    else {
+      http("send_manual_address")
+        .post("/manual-address")
+        .formParam("addressLine1", "Flat B")
+        .formParam("addressLine2", "221 Baker Street")
+        .formParam("townOrCity", "London")
+        .formParam("postcode", "AA1 1AA")
+        .formParam("_csrf", "${csrf_token2}")
+    }
 
   val randomNinos = Iterator.continually(
     // Random number will be accessible in session under variable "OrderRef"
@@ -61,13 +83,13 @@ class ClaimSimulation extends Simulation {
           .saveAs("csrf_token1")
       )
     )
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_do_you_live_in_scotland_yes")
       .post("/do-you-live-in-scotland")
       .formParam("doYouLiveInScotland", "yes")
       .formParam("_csrf", "${csrf_token1}"))
-    .pause(1,2)
+    .pause(1, 2)
 
 
   val fullClaim = feed(randomNinos)
@@ -77,7 +99,7 @@ class ClaimSimulation extends Simulation {
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
           .saveAs("csrf_token2")
-      ).check( headerRegex(HttpHeaderNames.SetCookie, "htbhf.sid=(.*)").saveAs("sid") )
+      ).check(headerRegex(HttpHeaderNames.SetCookie, "htbhf.sid=(.*)").saveAs("sid"))
     )
 
     .exec(addCookie((Cookie("htbhf.sid", "${sid}").withDomain(sessionDetailsDomain))))
@@ -86,7 +108,7 @@ class ClaimSimulation extends Simulation {
       .post("/do-you-live-in-scotland")
       .formParam("doYouLiveInScotland", "no")
       .formParam("_csrf", "${csrf_token2}"))
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_dob")
       .post("/enter-dob")
@@ -94,13 +116,13 @@ class ClaimSimulation extends Simulation {
       .formParam("dateOfBirth-month", "11")
       .formParam("dateOfBirth-year", "1980")
       .formParam("_csrf", "${csrf_token2}"))
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_do_you_have_children")
       .post("/do-you-have-children")
       .formParam("doYouHaveChildren", "yes")
       .formParam("_csrf", "${csrf_token2}"))
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_children_dob")
       .post("/children-dob")
@@ -109,7 +131,7 @@ class ClaimSimulation extends Simulation {
       .formParam("childDob-1-month", dateAYearAgo.getMonthValue())
       .formParam("childDob-1-year", dateAYearAgo.getYear())
       .formParam("_csrf", "${csrf_token2}"))
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_are_you_pregnant")
       .post("/are-you-pregnant")
@@ -119,59 +141,52 @@ class ClaimSimulation extends Simulation {
       .formParam("expectedDeliveryDate-year", today.getYear())
       .formParam("_csrf", "${csrf_token2}")
     )
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_name")
       .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token2}"))
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_nino")
       .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token2}"))
-    .pause(1,2)
+    .pause(1, 2)
 
-    .exec(http("send_manual_address")
-      .post("/manual-address")
-      .formParam("addressLine1", "Flat B")
-      .formParam("addressLine2", "221 Baker Street")
-      .formParam("townOrCity", "London")
-      .formParam("postcode", "AA1 1AA")
-      .formParam("_csrf", "${csrf_token2}")
-    )
-    .pause(1,2)
+    .exec(addressStep)
+    .pause(1, 2)
 
     .exec(http("send_phone_number")
       .post("/phone-number")
       .formParam("phoneNumber", "07123456789")
       .formParam("_csrf", "${csrf_token2}")
     )
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_email_address")
       .post("/email-address")
       .formParam("emailAddress", "test@email.com")
       .formParam("_csrf", "${csrf_token2}")
     )
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("send_code")
       .post("/send-code")
       .formParam("channelForCode", "text")
       .formParam("_csrf", "${csrf_token2}")
     )
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("get unique code from session")
       .get(sessionDetailsBaseURl + "/session-details/confirmation-code")
       .check(bodyString.saveAs("confirmationCode"))
     )
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("enter_code")
       .post("/enter-code")
       .formParam("confirmationCode", "${confirmationCode}")
       .formParam("_csrf", "${csrf_token2}")
     )
-    .pause(1,2)
+    .pause(1, 2)
 
     .exec(http("accept_terms_and_conditions")
       .post("/terms-and-conditions")

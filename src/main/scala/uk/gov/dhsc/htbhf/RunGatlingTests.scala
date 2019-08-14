@@ -19,7 +19,7 @@ object RunGatlingTests {
     try {
       val result = Gatling.fromMap(config)
       // write the result to system.out so we can identify success or failure from the logs
-      System.out.println("Finished running gatling tests - result=" + result)
+      System.out.println("Finished running gatling tests with feature toggles: " + sys.env.get("FEATURE_TOGGLES") + " - result=" + result)
       System.out.println("Zipping reports to " + resultsZip.getAbsolutePath)
       ZipUtil.pack(new File(resultsDir), resultsZip)
     } catch {
