@@ -57,8 +57,8 @@ class ClaimSimulation extends Simulation {
 
   val scotland = feed(randomNinos)
 
-    .exec(http("do-you-live-in-scotland-yes")
-      .get("/do-you-live-in-scotland")
+    .exec(http("scotland-yes")
+      .get("/scotland")
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
           .saveAs("csrf_token1")
@@ -67,16 +67,16 @@ class ClaimSimulation extends Simulation {
     .pause(1, 2)
 
     .exec(http("send_do_you_live_in_scotland_yes")
-      .post("/do-you-live-in-scotland")
-      .formParam("doYouLiveInScotland", "yes")
+      .post("/scotland")
+      .formParam("scotland", "yes")
       .formParam("_csrf", "${csrf_token1}"))
     .pause(1, 2)
 
 
   val fullClaim = feed(randomNinos)
 
-    .exec(http("do-you-live-in-scotland-no")
-      .get("/do-you-live-in-scotland")
+    .exec(http("scotland-no")
+      .get("/scotland")
       .check(
         regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
           .saveAs("csrf_token2")
@@ -86,8 +86,8 @@ class ClaimSimulation extends Simulation {
     .exec(addCookie((Cookie("htbhf.sid", "${sid}").withDomain(sessionDetailsDomain))))
 
     .exec(http("send_do_you_live_in_scotland_no")
-      .post("/do-you-live-in-scotland")
-      .formParam("doYouLiveInScotland", "no")
+      .post("/scotland")
+      .formParam("scotland", "no")
       .formParam("_csrf", "${csrf_token2}"))
     .pause(1, 2)
 

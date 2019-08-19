@@ -8,3 +8,4 @@ gatling-results/
 /src/main/resources/manifest.yml
 performance-test-results/
 performance-test-results.zip
+/run_performance_tests.sh
