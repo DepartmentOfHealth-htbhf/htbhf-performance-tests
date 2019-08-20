@@ -106,7 +106,7 @@ class ClaimSimulation extends Simulation {
     .pause(1, 2)
 
     .exec(http("send_children_dob")
-      .post("/children-dob")
+      .post("/child-date-of-birth")
       .formParam("childName-1", "Joe")
       .formParam("childDob-1-day", dateAYearAgo.getDayOfMonth())
       .formParam("childDob-1-month", dateAYearAgo.getMonthValue())
