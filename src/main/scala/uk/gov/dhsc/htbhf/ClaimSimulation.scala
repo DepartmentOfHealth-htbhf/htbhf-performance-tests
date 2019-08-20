@@ -92,7 +92,7 @@ class ClaimSimulation extends Simulation {
     .pause(1, 2)
 
     .exec(http("send_dob")
-      .post("/enter-dob")
+      .post("/date-of-birth")
       .formParam("dateOfBirth-day", "1")
       .formParam("dateOfBirth-month", "11")
       .formParam("dateOfBirth-year", "1980")
