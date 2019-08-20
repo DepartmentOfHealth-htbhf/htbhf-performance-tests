@@ -125,7 +125,7 @@ class ClaimSimulation extends Simulation {
     .pause(1, 2)
 
     .exec(http("send_name")
-      .post("/enter-name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token2}"))
+      .post("/name").formParam("firstName", "David").formParam("lastName", "smith").formParam("_csrf", "${csrf_token2}"))
     .pause(1, 2)
 
     .exec(http("send_nino")
