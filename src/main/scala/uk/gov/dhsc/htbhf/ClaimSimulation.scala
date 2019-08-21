@@ -136,12 +136,21 @@ class ClaimSimulation extends Simulation {
     // See https://gatling.io/docs/current/general/scenario/#scenario-conditions
     .doIfEquals(features.getOrElse("ADDRESS_LOOKUP_ENABLED", false), true) {
       exec(
-        http("send postcode")
+        http("send_postcode")
           .post("/postcode")
           .formParam("postcode", "AA1 1AA")
           .formParam("_csrf", "${csrf_token2}")
       )
       .pause(1, 2)
+    }
+
+    .doIfEquals(features.getOrElse("ADDRESS_LOOKUP_ENABLED", false), true) {
+      exec(
+        http("select_address")
+          .post("/select-address")
+          .formParam("_csrf", "${csrf_token2}")
+      )
+        .pause(1, 2)
     }
 
     .exec(
