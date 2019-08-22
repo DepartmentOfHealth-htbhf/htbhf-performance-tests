@@ -12,6 +12,10 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.parsing.json.JSON
 
+/**
+ * Runs performance tests against applicant UI.
+ * The version of the performance tests to run is specified in test_version.properties in htbhf-applicant-web-ui.
+ */
 class ClaimSimulation extends Simulation {
 
   val baseURl = sys.env("BASE_URL")
