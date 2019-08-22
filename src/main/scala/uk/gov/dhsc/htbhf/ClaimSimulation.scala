@@ -129,7 +129,7 @@ class ClaimSimulation extends Simulation {
     .pause(1, 2)
 
     .exec(http("send_nino")
-      .post("/enter-nino").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token2}"))
+      .post("/national-insurance-number").formParam("nino", "${nino}").formParam("_csrf", "${csrf_token2}"))
     .pause(1, 2)
 
     // TODO Randomly have some users use address lookup and others use manual address.
