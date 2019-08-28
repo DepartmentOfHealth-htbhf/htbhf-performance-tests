@@ -3,6 +3,10 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:11.0.4-jdk-stretch
+    environment:
+      APP_NAME: htbhf-performance-tests
+      BIN_DIR: ./bin
+      BINTRAY_ROOT_URL: https://dl.bintray.com/departmentofhealth-htbhf/maven/uk/gov/dhsc/htbhf
     steps:
       - checkout
       - restore_cache:
