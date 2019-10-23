@@ -21,11 +21,12 @@ class ClaimSimulation extends Simulation {
   val baseURl = sys.env("BASE_URL")
   val sessionDetailsBaseURl = sys.env("SESSION_DETAILS_BASE_URL")
   var sessionDetailsDomain = new URI(sessionDetailsBaseURl).getHost
-  val numStartUsers = sys.env("PERF_TEST_START_NUMBER_OF_USERS").toInt
-  val numEndUsers = sys.env("PERF_TEST_END_NUMBER_OF_USERS").toInt
-  val soakTestDuration = sys.env("PERF_TEST_SOAK_TEST_DURATION_MINUTES").toInt
-  val responseTimeThresholdFor95thPercentile = sys.env("THRESHOLD_95TH_PERCENTILE_MILLIS").toInt
-  val responseTimeThresholdForMean = sys.env("THRESHOLD_MEAN_MILLIS").toInt
+  val numStartUsers = sys.env.getOrElse("PERF_TEST_START_NUMBER_OF_USERS", "1").toInt
+  val numEndUsers = sys.env.getOrElse("PERF_TEST_END_NUMBER_OF_USERS", "20").toInt
+  val rampUpUsersDuration = sys.env.getOrElse("PERF_TEST_RAMP_UP_USERS_DURATION", "2").toInt
+  val soakTestDuration = sys.env.getOrElse("PERF_TEST_SOAK_TEST_DURATION_MINUTES", "2").toInt
+  val responseTimeThresholdFor95thPercentile = sys.env.getOrElse("THRESHOLD_95TH_PERCENTILE_MILLIS", "2000").toInt
+  val responseTimeThresholdForMean = sys.env.getOrElse("THRESHOLD_MEAN_MILLIS", "500").toInt
 
   val httpProtocol = http.baseUrl(baseURl)
 
@@ -213,9 +214,9 @@ class ClaimSimulation extends Simulation {
   val fullScenarios = scenario("Full scenarios").exec(fullClaim)
 
   setUp(
-    scottishScenario.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+    scottishScenario.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (rampUpUsersDuration minutes),
       constantUsersPerSec(numEndUsers) during (soakTestDuration minutes)),
-    fullScenarios.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (1 minutes),
+    fullScenarios.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (rampUpUsersDuration minutes),
       constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
   ).protocols(httpProtocol)
     .assertions(
