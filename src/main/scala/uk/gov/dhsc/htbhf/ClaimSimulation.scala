@@ -39,6 +39,10 @@ class ClaimSimulation extends Simulation {
 
   private val features: Map[String, Boolean] = JSON.parseFull(sys.env.getOrElse("FEATURE_TOGGLES", "{}")).get.asInstanceOf[Map[String, Boolean]]
 
+  private val VALID_NINO_CHARS = "ABCEGHJKLMNPRSTWYZ"
+  // the first two characters of a nino combined can not be one of the strings in the list below
+  private val INVALID_NINO_FIRST_TWO_CHARS = Array("BG","GB","NK","KN","TN","NT","ZZ")
+
   private def getNinoFormat = {
     val ninoFormat = NumberFormat.getInstance
     ninoFormat.setMaximumFractionDigits(0)
@@ -47,15 +51,25 @@ class ClaimSimulation extends Simulation {
     ninoFormat
   }
 
-  private def getRandomAlphabetCharAsString() = {
-    val randomChar = (random.nextInt(26) + 'A').asInstanceOf[Char]
+  private def getRandomNinoCharAsAString: String = {
+    val randomChar = VALID_NINO_CHARS.charAt(random.nextInt(VALID_NINO_CHARS.length))
     randomChar.toString
+  }
+
+  private def getRandomValidTwoNinoCharsAsAString = {
+    var randomChars:String = ""
+
+    do {
+      randomChars = getRandomNinoCharAsAString + getRandomNinoCharAsAString
+    } while(INVALID_NINO_FIRST_TWO_CHARS contains randomChars)
+
+    randomChars
   }
 
   val randomNinos = Iterator.continually(
     // Random number will be accessible in session under variable "OrderRef"
     Map("nino" -> {
-      getRandomAlphabetCharAsString + getRandomAlphabetCharAsString + ninoFormat.format(random.nextInt(999999)) + "D"
+      getRandomValidTwoNinoCharsAsAString + ninoFormat.format(random.nextInt(999999)) + "D"
     })
   )
 
