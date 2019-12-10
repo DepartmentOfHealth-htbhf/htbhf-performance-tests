@@ -41,7 +41,7 @@ class ClaimSimulation extends Simulation {
 
   private val VALID_NINO_CHARS = "ABCEGHJKLMNPRSTWYZ"
   // the first two characters of a nino combined can not be one of the strings in the list below
-  private val INVALID_NINO_FIRST_TWO_CHARS = Array("BG","GB","NK","KN","TN","NT","ZZ")
+  private val VALID_NINO_PREFIX_REGEX = "^(?!BG|GB|NK|KN|TN|NT|ZZ)[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z]$"
 
   private def getNinoFormat = {
     val ninoFormat = NumberFormat.getInstance
@@ -61,7 +61,7 @@ class ClaimSimulation extends Simulation {
 
     do {
       randomChars = getRandomNinoCharAsAString + getRandomNinoCharAsAString
-    } while(INVALID_NINO_FIRST_TWO_CHARS contains randomChars)
+    } while(!randomChars.matches(VALID_NINO_PREFIX_REGEX))
 
     randomChars
   }
