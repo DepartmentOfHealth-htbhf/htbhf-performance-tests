@@ -33,9 +33,9 @@ class ClaimSimulation extends Simulation {
   private val today: LocalDate = LocalDate.now()
 
   private val random = new Random
-  private val ninoFormat = getNinoFormat
+  private val fourDigitFormat = getFourDigitFormat
 
-  private val dateAYearAgo: LocalDate = LocalDate.now().minusYears(1)
+  private val dobUnderOne: LocalDate = LocalDate.now.minusMonths(6).withDayOfMonth(1)
 
   private val features: Map[String, Boolean] = JSON.parseFull(sys.env.getOrElse("FEATURE_TOGGLES", "{}")).get.asInstanceOf[Map[String, Boolean]]
 
@@ -43,10 +43,10 @@ class ClaimSimulation extends Simulation {
   // the first two characters of a nino combined can not be one of the strings in the list below
   private val VALID_NINO_PREFIX_REGEX = "^(?!BG|GB|NK|KN|TN|NT|ZZ)[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z]$"
 
-  private def getNinoFormat = {
+  private def getFourDigitFormat = {
     val ninoFormat = NumberFormat.getInstance
     ninoFormat.setMaximumFractionDigits(0)
-    ninoFormat.setMinimumIntegerDigits(6)
+    ninoFormat.setMinimumIntegerDigits(4)
     ninoFormat.setGroupingUsed(false)
     ninoFormat
   }
@@ -66,10 +66,21 @@ class ClaimSimulation extends Simulation {
     randomChars
   }
 
+  private def getRandomNinoDigits = {
+    // the first digit will always be in the range 1-9, the second digit always 1, the rest random
+    // this matches the NINO format for a single child under one in the smart stub
+    // (where if number U1 is greater than the number U4 it is ignored). Using a random number 1-9 in the first digit gives us a greater range of NINOs.
+    StringBuilder.newBuilder
+      .append(random.nextInt(8) + 1)
+      .append("1")
+      .append(fourDigitFormat.format(random.nextInt(9999)))
+      .toString()
+  }
+
   val randomNinos = Iterator.continually(
     // Random number will be accessible in session under variable "OrderRef"
     Map("nino" -> {
-      getRandomValidTwoNinoCharsAsAString + ninoFormat.format(random.nextInt(999999)) + "D"
+      getRandomValidTwoNinoCharsAsAString + getRandomNinoDigits + "D"
     })
   )
 
@@ -127,9 +138,9 @@ class ClaimSimulation extends Simulation {
     .exec(http("send_children_dob")
       .post("/child-date-of-birth")
       .formParam("childName-1", "Joe")
-      .formParam("childDob-1-day", dateAYearAgo.getDayOfMonth())
-      .formParam("childDob-1-month", dateAYearAgo.getMonthValue())
-      .formParam("childDob-1-year", dateAYearAgo.getYear())
+      .formParam("childDob-1-day", dobUnderOne.getDayOfMonth())
+      .formParam("childDob-1-month", dobUnderOne.getMonthValue())
+      .formParam("childDob-1-year", dobUnderOne.getYear())
       .formParam("_csrf", "${csrf_token2}"))
     .pause(1, 2)
 
