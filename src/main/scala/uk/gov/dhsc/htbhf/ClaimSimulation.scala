@@ -84,6 +84,27 @@ class ClaimSimulation extends Simulation {
     })
   )
 
+  val randomNhsNos = Iterator.continually(
+    // Random number will be accessible in session under variable "OrderRef"
+    Map("nhsno" -> {
+      randomAlphaNumericString(5)
+    })
+  )
+
+  def randomAlphaNumericString(length: Int): String = {
+    //generates random alphanumeric characters
+    val chars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9')
+    randomStringFromCharList(length, chars)
+  }
+
+  def randomStringFromCharList(length: Int, chars: Seq[Char]): String = {
+    val sb = new StringBuilder
+    for (i <- 1 to length) {
+      val randomNum = util.Random.nextInt(chars.length)
+      sb.append(chars(randomNum))
+    }
+    sb.toString
+  }
 
   val scotland = feed(randomNinos)
 
@@ -102,6 +123,22 @@ class ClaimSimulation extends Simulation {
       .formParam("_csrf", "${csrf_token1}"))
     .pause(1, 2)
 
+  val nhsNumber = feed(randomNhsNos)
+
+    .exec(http("nhsnumber-entry")
+      .get("/test/nhs-number")
+      .check(
+        regex("""<input type="hidden" name="_csrf" value="([^"]+)"""")
+          .saveAs("csrf_token3")
+      )
+    )
+    .pause(1, 2)
+
+    .exec(http("send-nhs-number")
+      .post("/test/nhs-number")
+      .formParam("nhsno", "${nhsno}")
+      .formParam("_csrf", "${csrf_token3}"))
+      .pause(1, 2)
 
   val fullClaim = feed(randomNinos)
 
@@ -237,9 +274,12 @@ class ClaimSimulation extends Simulation {
 
   val scottishScenario = scenario("Scottish Scenario").exec(scotland)
   val fullScenarios = scenario("Full scenarios").exec(fullClaim)
+  val nhsNumberScenario = scenario("NHS Number scenarios").exec(nhsNumber)
 
   setUp(
     scottishScenario.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (rampUpUsersDuration minutes),
+      constantUsersPerSec(numEndUsers) during (soakTestDuration minutes)),
+    nhsNumberScenario.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (rampUpUsersDuration minutes),
       constantUsersPerSec(numEndUsers) during (soakTestDuration minutes)),
     fullScenarios.inject(rampUsersPerSec(numStartUsers) to numEndUsers during (rampUpUsersDuration minutes),
       constantUsersPerSec(numEndUsers) during (soakTestDuration minutes))
