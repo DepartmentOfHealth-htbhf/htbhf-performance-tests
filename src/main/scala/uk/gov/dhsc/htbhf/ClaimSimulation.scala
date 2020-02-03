@@ -85,14 +85,14 @@ class ClaimSimulation extends Simulation {
   )
 
   val randomNhsNos = Iterator.continually(
-    // Random number will be accessible in session under variable "OrderRef"
+    // Creating random nhs numbers
     Map("nhsno" -> {
       randomAlphaNumericString(5)
     })
   )
 
   def randomAlphaNumericString(length: Int): String = {
-    //generates random alphanumeric characters
+    // generates random alphanumeric characters
     val chars = ('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9')
     randomStringFromCharList(length, chars)
   }
